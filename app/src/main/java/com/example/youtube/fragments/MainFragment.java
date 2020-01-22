@@ -1,6 +1,7 @@
 package com.example.youtube.fragments;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.youtube.R;
+import com.example.youtube.VideoActivity;
 import com.example.youtube.adapters.VideoAdapter;
 
 import org.apache.http.HttpEntity;
@@ -41,8 +44,7 @@ public class MainFragment extends Fragment {
     private ListView videosList;
     private VideoAdapter adapter;
     private List<Map<String, Object>> dataSet = new ArrayList<>();
-
-
+    public View.OnClickListener playVideo;
 
     public MainFragment() {
 
@@ -68,9 +70,23 @@ public class MainFragment extends Fragment {
     }
 
     private void initList() {
-        adapter = new VideoAdapter(getActivity(), dataSet);
+
+        playVideo = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = v.getContentDescription().toString();
+                Intent intent = new Intent(MainFragment.this.getActivity(), VideoActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        };
+
+        adapter = new VideoAdapter(getActivity(), dataSet, playVideo);
         videosList.setAdapter(adapter);
     }
+
+
+
 
 
 
@@ -80,7 +96,7 @@ public class MainFragment extends Fragment {
         private static final String TAG = "HttpSearch";
 
         private final static String API_KEY = "&key=AIzaSyBlGPQx1C9hk_xk0uA0JpRuSuvTdhpq3VY";
-        private final static String urlFront = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=";
+        private final static String urlFront = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=";
         private String question;
 
 
@@ -132,8 +148,11 @@ public class MainFragment extends Fragment {
                 JSONArray jsonArray = json.getJSONArray("items");
                 for (int i=0; i<jsonArray.length(); i++) {
                     JSONObject ith = jsonArray.getJSONObject(i);
+                    JSONObject type = ith.getJSONObject("id");
+                    if (!type.has("videoId")) continue;
                     JSONObject snippet = ith.getJSONObject("snippet");
                     JSONObject thumb = snippet.getJSONObject("thumbnails");
+                    String id = ith.getJSONObject("id").getString("videoId");
                     String title = snippet.getString("title");
                     String publishedAt = snippet.getString("publishedAt");
                     String cover = thumb.getJSONObject("high").getString("url");
@@ -142,6 +161,7 @@ public class MainFragment extends Fragment {
                     map.put("title", title);
                     map.put("publishedAt", publishedAt);
                     map.put("cover", cover);
+                    map.put("id", id);
                     data.add(map);
                 }
 

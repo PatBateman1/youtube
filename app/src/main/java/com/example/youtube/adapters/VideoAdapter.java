@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.youtube.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Map;
@@ -16,10 +18,14 @@ public class VideoAdapter extends BaseAdapter {
 
     private List<Map<String, Object>> videos;
     private LayoutInflater inflater;
+    private Context context;
+    private View.OnClickListener onClickListener;
 
-    public VideoAdapter(Context context, List<Map<String, Object>> data) {
+    public VideoAdapter(Context context, List<Map<String, Object>> data, View.OnClickListener onClickListener) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.videos = data;
+        this.onClickListener = onClickListener;
     }
 
 
@@ -45,17 +51,22 @@ public class VideoAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new MyViewHolder();
             convertView = inflater.inflate(R.layout.vedio_item, null);
-            //viewHolder.vedioCover = convertView.findViewById(R.id.video_cover);
-            viewHolder.vedioTitle = convertView.findViewById(R.id.video_title);
-            viewHolder.vedioPublishedAt = convertView.findViewById(R.id.video_published_at);
+            viewHolder.videoId = convertView.findViewById(R.id.video_id);
+            viewHolder.videoCover = convertView.findViewById(R.id.video_cover);
+            viewHolder.videoTitle = convertView.findViewById(R.id.video_title);
+            viewHolder.videoPublishedAt = convertView.findViewById(R.id.video_published_at);
+            viewHolder.videoCover.setOnClickListener(onClickListener);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (MyViewHolder) convertView.getTag();
         }
 
         Map<String, Object> video = videos.get(position);
-        viewHolder.vedioTitle.setText((String) video.get("title"));
-        viewHolder.vedioPublishedAt.setText((String) video.get("publishedAt"));
+        viewHolder.videoId.setText((String) video.get("id"));
+        viewHolder.videoCover.setContentDescription((String) video.get("id"));
+        viewHolder.videoTitle.setText((String) video.get("title"));
+        viewHolder.videoPublishedAt.setText((String) video.get("publishedAt"));
+        Picasso.with(context).load((String) video.get("cover")).into(viewHolder.videoCover);
 
         return convertView;
     }
@@ -63,9 +74,10 @@ public class VideoAdapter extends BaseAdapter {
 
 
     public class MyViewHolder {
-         //public ImageView vedioCover;
-         public TextView vedioTitle;
-         public TextView vedioPublishedAt;
+        public TextView videoId;
+        public ImageView videoCover;
+        public TextView videoTitle;
+        public TextView videoPublishedAt;
     }
 
     public void setVideos (List<Map<String, Object>> data) {

@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                  startActivity(intent);
-
             }
         };
         searchButton.setOnClickListener(change);
@@ -55,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.fragment_main, mainFragment);
+        fragmentTransaction.add(R.id.container, mainFragment);
 
         fragmentTransaction.commit();
     }
+
 
 
 }
