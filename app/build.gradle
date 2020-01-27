@@ -29,14 +29,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
-//    implementation 'com.google.code.gson:gson:2.8.1'
-//    implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.squareup.okhttp:okhttp:2.3.0'
     implementation "commons-logging:commons-logging:1.2"
     implementation 'com.android.support:support-v4:25.3.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
-//    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-//    implementation 'com.google.apis:google-api-services-youtube:v3-rev212-1.25.0'
+    implementation 'com.android.support:design:24.2.0'
 
 }

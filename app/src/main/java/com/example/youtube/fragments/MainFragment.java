@@ -4,18 +4,17 @@ package com.example.youtube.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.youtube.R;
 import com.example.youtube.VideoActivity;
 import com.example.youtube.adapters.VideoAdapter;
+import com.example.youtube.utils.AddPlayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -44,7 +43,9 @@ public class MainFragment extends Fragment {
     private ListView videosList;
     private VideoAdapter adapter;
     private List<Map<String, Object>> dataSet = new ArrayList<>();
-    public View.OnClickListener playVideo;
+    private View.OnClickListener playVideo;
+    private View.OnLongClickListener addTolist;
+    private List<String> playList;
 
     public MainFragment() {
 
@@ -60,9 +61,9 @@ public class MainFragment extends Fragment {
         videosList =  view.findViewById(R.id.lv_main);
         if (getArguments() != null) {
             question = getArguments().getString("question");
+            playList = getArguments().getStringArrayList("playList");
         }
-        Log.d(TAG, "onCreateView: 5555555555555"+getArguments());
-        Log.d(TAG, "onCreateView: 6666666666666"+question);
+
         initList();
 
         new HttpSearch(question).execute();
@@ -81,7 +82,16 @@ public class MainFragment extends Fragment {
             }
         };
 
-        adapter = new VideoAdapter(getActivity(), dataSet, playVideo);
+        addTolist = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String id = v.getContentDescription().toString();
+                new AddPlayList("add later", id, playList).execute();  //name add later
+                return true;
+            }
+        };
+
+        adapter = new VideoAdapter(getActivity(), dataSet, playVideo, addTolist);
         videosList.setAdapter(adapter);
     }
 
@@ -159,7 +169,7 @@ public class MainFragment extends Fragment {
 
                     Map<String, Object> map = new HashMap<>();
                     map.put("title", title);
-                    map.put("publishedAt", publishedAt);
+                    map.put("publishedAt", publishedAt.substring(0, 10));
                     map.put("cover", cover);
                     map.put("id", id);
                     data.add(map);

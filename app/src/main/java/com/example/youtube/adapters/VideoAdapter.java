@@ -20,12 +20,14 @@ public class VideoAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
     private View.OnClickListener onClickListener;
+    private View.OnLongClickListener onLongClickListener;
 
-    public VideoAdapter(Context context, List<Map<String, Object>> data, View.OnClickListener onClickListener) {
+    public VideoAdapter(Context context, List<Map<String, Object>> data, View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.videos = data;
         this.onClickListener = onClickListener;
+        this.onLongClickListener = onLongClickListener;
     }
 
 
@@ -51,18 +53,20 @@ public class VideoAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new MyViewHolder();
             convertView = inflater.inflate(R.layout.vedio_item, null);
-            viewHolder.videoId = convertView.findViewById(R.id.video_id);
+
             viewHolder.videoCover = convertView.findViewById(R.id.video_cover);
+
             viewHolder.videoTitle = convertView.findViewById(R.id.video_title);
             viewHolder.videoPublishedAt = convertView.findViewById(R.id.video_published_at);
             viewHolder.videoCover.setOnClickListener(onClickListener);
+            viewHolder.videoCover.setOnLongClickListener(onLongClickListener);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (MyViewHolder) convertView.getTag();
         }
 
         Map<String, Object> video = videos.get(position);
-        viewHolder.videoId.setText((String) video.get("id"));
+
         viewHolder.videoCover.setContentDescription((String) video.get("id"));
         viewHolder.videoTitle.setText((String) video.get("title"));
         viewHolder.videoPublishedAt.setText((String) video.get("publishedAt"));
@@ -74,7 +78,7 @@ public class VideoAdapter extends BaseAdapter {
 
 
     public class MyViewHolder {
-        public TextView videoId;
+
         public ImageView videoCover;
         public TextView videoTitle;
         public TextView videoPublishedAt;

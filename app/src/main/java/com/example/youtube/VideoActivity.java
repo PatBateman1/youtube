@@ -8,10 +8,13 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 public class VideoActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
+    private static final String TAG = "VideoActivity";
 
     public static final String API_KEY  = "AIzaSyBlGPQx1C9hk_xk0uA0JpRuSuvTdhpq3VY";
     public String VIDEO_ID = "1etSaKbasRo";
-    YouTubePlayerView player;
+    public YouTubePlayerView player;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,4 +99,5 @@ public class VideoActivity extends YouTubeBaseActivity implements YouTubePlayer.
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
 
     }
+
 }

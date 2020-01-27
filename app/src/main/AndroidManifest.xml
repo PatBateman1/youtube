@@ -13,13 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".VideoActivity"></activity>
-
         <service
-            android:name=".services.MyService"
+            android:name=".services.PlayVideoService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"></service>
 
+        <activity android:name=".VideoActivity" />
         <activity android:name=".YoutubeActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".MainActivity">
