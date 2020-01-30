@@ -10,14 +10,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:background="#000000">
 
         <ImageView
             android:layout_width="95dp"
-            android:layout_height="69dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="16dp"
+            android:layout_height="60dp"
             android:src="@mipmap/app_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +23,7 @@
         <ImageView
             android:id="@+id/search_button"
             android:layout_width="55dp"
-            android:layout_height="42dp"
+            android:layout_height="40dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
@@ -38,11 +36,11 @@
 
 
 
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
@@ -50,14 +48,45 @@
             android:layout_height="wrap_content" />
 
         <androidx.viewpager.widget.ViewPager
+            android:layout_above="@id/player"
+            android:layout_below="@id/tab_layout"
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" >
+
+
+        </androidx.viewpager.widget.ViewPager>
+
+
+        <LinearLayout
+            android:id="@+id/player"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+
+            <Button
+                android:id="@+id/play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="play" />
+
+            <Button
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="next" />
 
 
         </LinearLayout>
 
-
+    </RelativeLayout>
 
 
 

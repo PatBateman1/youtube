@@ -4,6 +4,7 @@ package com.example.youtube.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,11 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.youtube.MainActivity;
 import com.example.youtube.R;
 import com.example.youtube.VideoActivity;
+import com.example.youtube.adapters.PlayListAdapter;
 import com.example.youtube.adapters.VideoAdapter;
-import com.example.youtube.utils.AddPlayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,7 +47,9 @@ public class MainFragment extends Fragment {
     private List<Map<String, Object>> dataSet = new ArrayList<>();
     private View.OnClickListener playVideo;
     private View.OnLongClickListener addTolist;
-    private List<String> playList;
+    //private List<String> playList;
+    private PlayListAdapter playListAdapter;
+
 
     public MainFragment() {
 
@@ -61,7 +65,7 @@ public class MainFragment extends Fragment {
         videosList =  view.findViewById(R.id.lv_main);
         if (getArguments() != null) {
             question = getArguments().getString("question");
-            playList = getArguments().getStringArrayList("playList");
+            //playList = getArguments().getStringArrayList("playList");
         }
 
         initList();
@@ -69,6 +73,7 @@ public class MainFragment extends Fragment {
         new HttpSearch(question).execute();
         return view;
     }
+
 
     private void initList() {
 
@@ -86,7 +91,7 @@ public class MainFragment extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 String id = v.getContentDescription().toString();
-                new AddPlayList("add later", id, playList).execute();  //name add later
+                new AddPlayList("add later", id).execute();  //name add later
                 return true;
             }
         };
@@ -95,8 +100,71 @@ public class MainFragment extends Fragment {
         videosList.setAdapter(adapter);
     }
 
+    public void setPlayListAdapter(PlayListAdapter playListAdapter) {
+        this.playListAdapter = playListAdapter;
+    }
 
 
+
+
+    public class AddPlayList extends AsyncTask <Void, String, String> {
+        private static final String TAG = "AddPlayList";
+
+        private final String API = "http://morning-wave-70140.herokuapp.com/api/";
+        private String videoName;
+        private String url;
+
+
+        public AddPlayList(String videoName, String id) {
+            this.url = API + id;
+            this.videoName = videoName;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            try {
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                String json = EntityUtils.toString(httpEntity);
+
+                return json;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+            if (response != null) {
+                try {
+                    JSONObject json = new JSONObject(response);
+                    if (json.has("url")) {
+                        String stream = json.getString("url");
+
+                        String item = videoName + "^" + stream;
+                        MainActivity.playList.add(item);
+                        playListAdapter.notifyDataSetChanged();
+
+                        Log.d(TAG, "onPostExecute: " + item);
+                        Log.d(TAG, "onPostExecute: " + MainActivity.playList.size());
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }
+    }
 
 
 
