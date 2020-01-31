@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private PlayListAdapter playListAdapter;
     private Button play;
     private Button next;
+    private ImageView searchButton;
     private SeekBar seekBar;
     private PlayerConnection mPlayerConnection;
     private IPlayerControl iPlayerControl;
@@ -55,23 +56,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final Intent intent = new Intent(this, SearchActivity.class);
-        ImageView searchButton = findViewById(R.id.search_button);
-        View.OnClickListener change = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 startActivity(intent);
-            }
-        };
-        searchButton.setOnClickListener(change);
-        Intent search = getIntent();
-        if (search != null) {
-            if (search.hasExtra("question")) {
-                question = search.getStringExtra("question");
-            }
 
-        }
+        initView();
 
+        initQuestion();
+
+        initTabAndFragments();
+
+        initPlayList();
+
+        initEvent();
+
+        initService();
+
+        initBindService();
+    }
+
+    private void initTabAndFragments() {
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.viewPager);
 
@@ -99,16 +100,16 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ViewPagerAdapter(fragmentManager, fragments);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
 
-        initPlayList();
+    private void initQuestion() {
+        Intent search = getIntent();
+        if (search != null) {
+            if (search.hasExtra("question")) {
+                question = search.getStringExtra("question");
+            }
 
-        initView();
-
-        initEvent();
-
-        initService();
-
-        initBindService();
+        }
     }
 
     private void initPlayList() {
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         play = findViewById(R.id.play);
         next = findViewById(R.id.next);
         seekBar = findViewById(R.id.seek_bar);
+        searchButton = findViewById(R.id.search_button);
     }
 
     private void initEvent() {
@@ -166,11 +168,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+            }
+        });
     }
 
     private void initService() {
         Intent serviceIntent = new Intent(this, PlayVideoService.class);
-        //serviceIntent.putStringArrayListExtra("playList", (ArrayList<String>) playList);
         startService(serviceIntent);
     }
 
